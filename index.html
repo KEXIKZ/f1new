@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Race Control Hub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1><span>●</span> Race Control Hub</h1>
+            <div id="league-title-display">Лига: F1 / GT3 Season 1</div>
+        </header>
+
+        <!-- Навигация -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" id="btn-schedule">🗓 Расписание и Этапы</button>
+            <button class="tab-btn" id="btn-strategy">⏱ Стратег Гонок</button>
+            <button class="tab-btn" id="btn-settings">⚙️ Настройки Лиги</button>
+        </div>
+
+        <!-- 1. РАСПИСАНИЕ -->
+        <div id="schedule" class="tab-content active">
+            <div class="card">
+                <h2>Добавить этап</h2>
+                <form id="add-race-form">
+                    <div class="form-group">
+                        <label>Название этапа / Гран-при</label>
+                        <input type="text" id="race-name" placeholder="Например: Гран-при Монцы" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Дата и время старта</label>
+                        <input type="datetime-local" id="race-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Формат уик-энда</label>
+                        <select id="race-format">
+                            <option value="Стандартный (FP1, FP2, Q, Race)">Стандартный (FP1, FP2, Q, Race)</option>
+                            <option value="Спринт (FP1, Q-Sprint, Sprint, Race)">Спринт (FP1, Q-Sprint, Sprint, Race)</option>
+                            <option value="Выносливость (Endurance)">Выносливость (Endurance)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">Добавить в календарь</button>
+                </form>
+            </div>
+
+            <div class="card wide">
+                <h2>Календарь сезона</h2>
+                <ul class="schedule-list" id="schedule-container"></ul>
+            </div>
+        </div>
+
+        <!-- 2. СТРАТЕГИЯ -->
+        <div id="strategy" class="tab-content">
+            <div class="card">
+                <h2>Параметры дистанции</h2>
+                <div class="form-group">
+                    <label>Общая дистанция (круги)</label>
+                    <input type="number" id="strat-laps" value="50">
+                </div>
+                <div class="form-group">
+                    <label>Базовый темп (сек/круг)</label>
+                    <input type="number" step="0.1" id="strat-base-pace" value="90.0">
+                </div>
+                <div class="form-group">
+                    <label>Потеря времени на пит-стопе (сек)</label>
+                    <input type="number" step="0.5" id="strat-pit-loss" value="22.0">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Стратегия А (1 Пит-стоп)</h2>
+                <div class="form-group">
+                    <label>Состав на старт</label>
+                    <select id="strat-a-t1">
+                        <option value="Soft">Soft</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Круг пит-стопа</label>
+                    <input type="number" id="strat-a-pit1" value="20">
+                </div>
+                <div class="form-group">
+                    <label>Второй состав</label>
+                    <select id="strat-a-t2">
+                        <option value="Soft">Soft</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard" selected>Hard</option>
+                    </select>
+                </div>
+
+                <div class="strat-result">
+                    <h4>Расчетное время:</h4>
+                    <div class="time" id="res-a-time">00:00:00</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Стратегия Б (2 Пит-стопа)</h2>
+                <div class="form-group">
+                    <label>Состав на старт</label>
+                    <select id="strat-b-t1">
+                        <option value="Soft" selected>Soft</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Круги пит-стопов (1 / 2)</label>
+                    <div class="flex-inputs">
+                        <input type="number" id="strat-b-pit1" value="15">
+                        <input type="number" id="strat-b-pit2" value="32">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Последующие составы</label>
+                    <div class="flex-inputs">
+                        <select id="strat-b-t2">
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Soft">Soft</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                        <select id="strat-b-t3">
+                            <option value="Soft" selected>Soft</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="strat-result">
+                    <h4>Расчетное время:</h4>
+                    <div class="time" id="res-b-time">00:00:00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. НАСТРОЙКИ -->
+        <div id="settings" class="tab-content">
+            <div class="card">
+                <h2>Настройки лиги</h2>
+                <form id="settings-form">
+                    <div class="form-group">
+                        <label>Название лиги</label>
+                        <input type="text" id="setting-league-name" value="F1 / GT3 Season 1">
+                    </div>
+                    <div class="form-group">
+                        <label>Обязательные составы шин?</label>
+                        <select id="setting-mandatory-tyres">
+                            <option value="yes">Да (минимум 2 разных)</option>
+                            <option value="no">Нет (свободный выбор)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Лимит топлива (л/гонку)</label>
+                        <input type="number" id="setting-fuel-limit" value="110">
+                    </div>
+                    <button type="submit" class="btn">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
